@@ -21,8 +21,18 @@ dependencies {
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    testImplementation 'org.seleniumhq.selenium:selenium-java:4.21.0'
+    testImplementation 'io.github.bonigarcia:webdrivermanager:5.8.0'
 }
 
 test {
     useJUnitPlatform()
+}
+
+tasks.register('seleniumTest', Test) {
+    description = 'Runs Selenium end-to-end tests (tagged with @Tag("selenium")).'
+    useJUnitPlatform {
+        includeTags 'selenium'
+    }
 }

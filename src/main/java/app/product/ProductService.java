@@ -48,11 +48,8 @@ public class ProductService {
         categoryService.get(categoryId);
 
         Product existing = get(id);
-        existing.setName(name.trim());
-        existing.setPrice(price);
-        existing.setQuantity(quantity);
-        existing.setCategoryId(categoryId);
-        return repository.save(existing);
+        Product updated = existing.withData(name.trim(), price, quantity, categoryId);
+        return repository.save(updated);
     }
 
     public void delete(Long id) {

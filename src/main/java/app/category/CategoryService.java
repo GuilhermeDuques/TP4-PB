@@ -29,8 +29,8 @@ public class CategoryService {
         validateId(id);
         validateName(name);
         Category existing = get(id);
-        existing.setName(name.trim());
-        return repository.save(existing);
+        Category updated = existing.withName(name.trim());
+        return repository.save(updated);
     }
 
     public void delete(Long id) {

@@ -3,11 +3,11 @@ package app.product;
 import java.math.BigDecimal;
 
 public class Product {
-    private Long id;
-    private String name;
-    private BigDecimal price;
-    private int quantity;
-    private Long categoryId;
+    private final Long id;
+    private final String name;
+    private final BigDecimal price;
+    private final int quantity;
+    private final Long categoryId;
 
     public Product(Long id, String name, BigDecimal price, int quantity, Long categoryId) {
         this.id = id;
@@ -25,39 +25,27 @@ public class Product {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
     public int getQuantity() {
         return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
     }
 
     public Long getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(Long categoryId) {
-        this.categoryId = categoryId;
+    public Product withId(Long id) {
+        return new Product(id, this.name, this.price, this.quantity, this.categoryId);
+    }
+
+    public Product withData(String name, BigDecimal price, int quantity, Long categoryId) {
+        return new Product(this.id, name, price, quantity, categoryId);
     }
 }

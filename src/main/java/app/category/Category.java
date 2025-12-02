@@ -1,8 +1,9 @@
 package app.category;
 
 public class Category {
-    private Long id;
-    private String name;
+
+    private final Long id;
+    private final String name;
 
     public Category(Long id, String name) {
         this.id = id;
@@ -17,15 +18,15 @@ public class Category {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public Category withId(Long id) {
+        return new Category(id, this.name);
+    }
+
+    public Category withName(String name) {
+        return new Category(this.id, name);
     }
 }

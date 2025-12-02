@@ -10,11 +10,13 @@ public class ProductRepository {
     private final AtomicLong idGenerator = new AtomicLong(1);
 
     public Product save(Product product) {
+        Product toSave = product;
         if (product.getId() == null) {
-            product.setId(idGenerator.getAndIncrement());
+            Long newId = idGenerator.getAndIncrement();
+            toSave = product.withId(newId);
         }
-        storage.put(product.getId(), product);
-        return product;
+        storage.put(toSave.getId(), toSave);
+        return toSave;
     }
 
     public Optional<Product> findById(Long id) {

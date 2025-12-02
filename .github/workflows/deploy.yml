@@ -1,0 +1,121 @@
+name: Deploy
+
+on:
+  push:
+    branches: [ "main" ]
+  release:
+    types: [ published ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Grant execute permission for Gradle wrapper
+        run: chmod +x gradlew
+
+      - name: Build project
+        run: ./gradlew build
+
+      - name: Upload build artifact (JAR)
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-jar
+          path: build/libs/*.jar
+
+      - name: Build summary
+        run: |
+          echo "## Resultado do build" >> $GITHUB_STEP_SUMMARY
+          echo "- Job: $GITHUB_JOB" >> $GITHUB_STEP_SUMMARY
+          echo "- Status: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+
+  deploy-dev:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: dev
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app-jar
+
+      - name: Log início do deploy DEV
+        run: echo "::notice::Iniciando deploy para ambiente DEV"
+
+      # Aqui entraria o comando real de deploy para DEV (ex.: CLI do provedor de nuvem)
+      - name: Simular deploy DEV
+        run: echo "Simulando deploy para DEV com artefato em ./app-jar"
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Grant execute permission for Gradle wrapper
+        run: chmod +x gradlew
+
+      - name: Run Selenium post-deploy tests (DEV)
+        run: ./gradlew seleniumTest
+        env:
+          APP_URL: ${{ secrets.APP_URL_DEV }}
+
+      - name: Deploy DEV summary
+        run: |
+          echo "## Deploy DEV" >> $GITHUB_STEP_SUMMARY
+          echo "- Status: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+
+  deploy-prod:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: prod
+    if: github.event_name == 'release'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app-jar
+
+      - name: Log início do deploy PROD
+        run: echo "::notice::Iniciando deploy para ambiente PROD"
+
+      # Aqui entraria o comando real de deploy para PROD
+      - name: Simular deploy PROD
+        run: echo "Simulando deploy para PROD com artefato em ./app-jar"
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Grant execute permission for Gradle wrapper
+        run: chmod +x gradlew
+
+      - name: Run Selenium post-deploy tests (PROD)
+        run: ./gradlew seleniumTest
+        env:
+          APP_URL: ${{ secrets.APP_URL_PROD }}
+
+      - name: Deploy PROD summary
+        run: |
+          echo "## Deploy PROD" >> $GITHUB_STEP_SUMMARY
+          echo "- Status: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY

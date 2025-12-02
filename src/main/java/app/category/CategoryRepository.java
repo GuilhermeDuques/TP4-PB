@@ -10,11 +10,13 @@ public class CategoryRepository {
     private final AtomicLong idGenerator = new AtomicLong(1);
 
     public Category save(Category category) {
+        Category toSave = category;
         if (category.getId() == null) {
-            category.setId(idGenerator.getAndIncrement());
+            Long newId = idGenerator.getAndIncrement();
+            toSave = category.withId(newId);
         }
-        storage.put(category.getId(), category);
-        return category;
+        storage.put(toSave.getId(), toSave);
+        return toSave;
     }
 
     public Optional<Category> findById(Long id) {
